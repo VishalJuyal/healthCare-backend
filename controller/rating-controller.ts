@@ -1,15 +1,14 @@
 import express from "express";
 import Ratings from "../models/ratings"
-const router = express.Router();
+import ratingsController from "../services/rating-service"
+import { authMiddleWare } from "../middlewares/authMiddleware";
 
-router.get("/get-ratings", async (res: any) => {
+const router = express.Router();
+const app = express();
+
+router.get("/get-ratings", authMiddleWare, async (req: any, res: any) => {
   try {
-    const reviews = await Ratings.find();
-    console.log(reviews);
-    return res.status(200).json({
-      status: 200,
-      reviews: reviews,
-    });
+    const reviews = await ratingsController.getRatings(req, res);
   } catch (error) {
     res.status(500).send("Internal Server Error");
   }
