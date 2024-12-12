@@ -14,14 +14,18 @@ router.get("/get-ratings", authMiddleWare, async (req: any, res: any) => {
   }
 });
 
-router.post("/submit-rating", async (req: any, res: any) => {
+router.post("/submit-rating", authMiddleWare, async (req: any, res: any) => {
   try {
-    const { name, rating, comment } = req?.body;
+    const { name, rating, comment, userId } = req?.body;
     const ipAddress = req.ip;
     console.log(req?.body);
     const updatedRating = await Ratings.findOneAndUpdate(
-      { ipAddress },
-      { name, rating, comment, ipAddress },
+      { userId: userId },
+      {
+        name, rating, comment,
+        updatedAt: Date.now(),
+        $setOnInsert: { createdAt: Date.now() },
+      },
       { new: true, upsert: true }
     );
     return res.status(200).json({

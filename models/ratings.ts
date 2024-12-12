@@ -20,12 +20,21 @@ const defaultRatingSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    ipAddress: {
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
+    userId: {
       type: String,
       unique: true,
+      default: null,
     },
   },
   { versionKey: false }
+);
+
+defaultRatingSchema.index({ userId: 1 },
+  { unique: true, partialFilterExpression: { userId: { $exists: true, $ne: null } } }
 );
 
 const DefaultRating = mongoose.model("default-rating", defaultRatingSchema);
