@@ -13,7 +13,7 @@ export const authMiddleWare = (req: any, res: any, next: any) => {
     // console.log(jwtToken);
     // const valiDation = userSchema.parse({ userName, password });
     // const token = jwt.sign(req.query, "secret", { expiresIn: "1h" });
-    const token = jwt.verify(jwtToken, "secret");
+    const token = jwt.verify(jwtToken, process.env.JWT_SECRET_KEY);
     console.log(token);
     next();
   } catch (error) {
