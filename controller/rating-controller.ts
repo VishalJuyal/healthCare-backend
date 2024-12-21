@@ -1,18 +1,24 @@
 import express from "express";
-import Ratings from "../models/ratings"
-import ratingsController from "../services/rating-service"
+import Ratings from "../models/ratings";
+import ratingsController from "../services/rating-service";
 import { authMiddleWare } from "../middlewares/authMiddleware";
+import { rateLimiterMiddleware } from "../middlewares/rateLimiter";
 
 const router = express.Router();
 const app = express();
 
-router.get("/get-ratings", authMiddleWare, async (req: any, res: any) => {
-  try {
-    const reviews = await ratingsController.getRatings(req, res);
-  } catch (error) {
-    res.status(500).send("Internal Server Error");
+router.get(
+  "/get-ratings",
+  authMiddleWare,
+  rateLimiterMiddleware,
+  async (req: any, res: any) => {
+    try {
+      const reviews = await ratingsController.getRatings(req, res);
+    } catch (error) {
+      res.status(500).send("Internal Server Error");
+    }
   }
-});
+);
 
 router.post("/submit-rating", authMiddleWare, async (req: any, res: any) => {
   try {
